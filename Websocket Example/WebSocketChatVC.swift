@@ -1,7 +1,6 @@
 import UIKit
-import Starscream
 
-class WebSocketChatVC: UIViewController, WebSocketDelegate, UITextFieldDelegate {
+class WebSocketChatVC: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var connectBtn: UIButton!
     @IBOutlet weak var disconnectBtn: UIButton!
@@ -10,18 +9,13 @@ class WebSocketChatVC: UIViewController, WebSocketDelegate, UITextFieldDelegate 
     @IBOutlet weak var messageTxtField: UITextField!
     @IBOutlet weak var sendMsgBtn: UIButton!
     
-    var socket: WebSocket!
+    private let webSocketManager = WebSocketManager(url: URL(string: "wss://echo.websocket.org")!)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
-        
-        // WebSocket setup
-        var request = URLRequest(url: URL(string: "wss://echo.websocket.org")!)
-        request.timeoutInterval = 5
-        socket = WebSocket(request: request)
-        socket.delegate = self  // Set delegate
+        setupWebSocketCallbacks()
     }
     
     func setupUI() {
@@ -33,6 +27,7 @@ class WebSocketChatVC: UIViewController, WebSocketDelegate, UITextFieldDelegate 
         statusTxtView.text = "WebSocket Logs:\n"
         
         messageTxtField.delegate = self
+        sendMsgBtn.isEnabled = false
         
         addDoneButtonToKeyboard() // Add Done button to keyboard
     }
@@ -52,23 +47,36 @@ class WebSocketChatVC: UIViewController, WebSocketDelegate, UITextFieldDelegate 
     @objc func doneButtonTapped() {
         messageTxtField.resignFirstResponder() // Dismiss keyboard
     }
+
+    private func setupWebSocketCallbacks() {
+        webSocketManager.onStateChange = { [weak self] state in
+            self?.handleStateChange(state)
+        }
+
+        webSocketManager.onMessage = { [weak self] message in
+            self?.appendLog("Message Received: \(message)")
+        }
+
+        webSocketManager.onError = { [weak self] message in
+            self?.appendLog("WebSocket Error: \(message)")
+        }
+    }
     
     // Connect Button Action
     @IBAction func connectBtnClicked(_ sender: Any) {
-        appendLog("Connecting to WebSocket...")
-        socket.connect()
+        webSocketManager.connect()
     }
     
     // Disconnect Button Action
     @IBAction func disconnectBtnClicked(_ sender: Any) {
-        appendLog("Disconnecting WebSocket...")
-        socket.disconnect()
-        sendMsgBtn.isEnabled = false // Disable send button when disconnected
+        webSocketManager.disconnect()
     }
     
     // TextField Editing Started
     @IBAction func messageTxtFieldClicked(_ sender: Any) {
-        sendMsgBtn.isEnabled = true // Enable send button when user types
+        if case .connected = webSocketManager.state {
+            sendMsgBtn.isEnabled = true
+        }
     }
     
     // Send Button Clicked
@@ -79,7 +87,7 @@ class WebSocketChatVC: UIViewController, WebSocketDelegate, UITextFieldDelegate 
         }
         
         appendLog("Sending: \(message)")
-        socket.write(string: message) // Send message to WebSocket
+        webSocketManager.send(message)
         messageTxtField.text = "" // Clear input field
     }
     
@@ -90,34 +98,31 @@ class WebSocketChatVC: UIViewController, WebSocketDelegate, UITextFieldDelegate 
         }
     }
 
-    // MARK: - WebSocketDelegate Methods
-    func didReceive(event: WebSocketEvent, client: WebSocketClient) {
-        DispatchQueue.main.async {
-            switch event {
-            case .connected(_):
-                self.appendLog("WebSocket Connected")
-                self.sendMsgBtn.isEnabled = true // Enable send button after connection
-                self.socketConnectionStatusLbl.text = "✅"
-                
-            case .disconnected(let reason, let code):
-                self.appendLog("WebSocket Disconnected: \(reason) (Code: \(code))")
-                self.sendMsgBtn.isEnabled = false // Disable send button when disconnected
-                self.socketConnectionStatusLbl.text = "❌"
-                
-            case .text(let message):
-                self.appendLog("Message Received: \(message)")
+    private func handleStateChange(_ state: WebSocketState) {
+        switch state {
+        case .disconnected:
+            appendLog("WebSocket Disconnected")
+            sendMsgBtn.isEnabled = false
+            socketConnectionStatusLbl.text = "❌"
 
-            case .cancelled:
-                self.appendLog("WebSocket Connection Cancelled")
-                self.sendMsgBtn.isEnabled = false
-                self.socketConnectionStatusLbl.text = "Disconnected"
+        case .connecting:
+            appendLog("Connecting to WebSocket...")
+            sendMsgBtn.isEnabled = false
+            socketConnectionStatusLbl.text = "Connecting"
 
-            case .error(let error):
-                self.appendLog("WebSocket Error: \(String(describing: error))")
+        case .connected:
+            appendLog("WebSocket Connected")
+            sendMsgBtn.isEnabled = true
+            socketConnectionStatusLbl.text = "✅"
 
-            default:
-                self.appendLog("WebSocket Event Occurred.")
-            }
+        case .disconnecting:
+            appendLog("Disconnecting WebSocket...")
+            sendMsgBtn.isEnabled = false
+            socketConnectionStatusLbl.text = "Disconnecting"
+
+        case .failed:
+            sendMsgBtn.isEnabled = false
+            socketConnectionStatusLbl.text = "Disconnected"
         }
     }
     
@@ -145,4 +150,3 @@ class WebSocketChatVC: UIViewController, WebSocketDelegate, UITextFieldDelegate 
         return true
     }
 }
-

@@ -13,9 +13,9 @@
 		C1AF1DCF2D5E040B00A97FE6 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = C1AF1DCE2D5E040B00A97FE6 /* Base */; };
 		C1AF1DD12D5E040C00A97FE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1AF1DD02D5E040C00A97FE6 /* Assets.xcassets */; };
 		C1AF1DD42D5E040C00A97FE6 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = C1AF1DD32D5E040C00A97FE6 /* Base */; };
-		C1AF1DDD2D5E045100A97FE6 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = C1AF1DDC2D5E045100A97FE6 /* Starscream */; };
 		C1AF1DE12D5E1B9B00A97FE6 /* WebSocketListenerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1AF1DE02D5E1B9B00A97FE6 /* WebSocketListenerVC.swift */; };
 		C1AF1DE32D5E239100A97FE6 /* UIColorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1AF1DE22D5E239100A97FE6 /* UIColorExt.swift */; };
+		C1D598323038305D00E07F59 /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D598313038305D00E07F59 /* WebSocketManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +29,7 @@
 		C1AF1DD52D5E040C00A97FE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C1AF1DE02D5E1B9B00A97FE6 /* WebSocketListenerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketListenerVC.swift; sourceTree = "<group>"; };
 		C1AF1DE22D5E239100A97FE6 /* UIColorExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExt.swift; sourceTree = "<group>"; };
+		C1D598313038305D00E07F59 /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,7 +37,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1AF1DDD2D5E045100A97FE6 /* Starscream in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,6 +67,7 @@
 				C1AF1DCB2D5E040B00A97FE6 /* WebSocketChatVC.swift */,
 				C1AF1DE02D5E1B9B00A97FE6 /* WebSocketListenerVC.swift */,
 				C1AF1DE22D5E239100A97FE6 /* UIColorExt.swift */,
+				C1D598313038305D00E07F59 /* WebSocketManager.swift */,
 				C1AF1DCD2D5E040B00A97FE6 /* Main.storyboard */,
 				C1AF1DD02D5E040C00A97FE6 /* Assets.xcassets */,
 				C1AF1DD22D5E040C00A97FE6 /* LaunchScreen.storyboard */,
@@ -92,7 +93,6 @@
 			);
 			name = "Websocket Example";
 			packageProductDependencies = (
-				C1AF1DDC2D5E045100A97FE6 /* Starscream */,
 			);
 			productName = "Websocket Example";
 			productReference = C1AF1DC42D5E040B00A97FE6 /* Websocket Example.app */;
@@ -123,7 +123,6 @@
 			);
 			mainGroup = C1AF1DBB2D5E040B00A97FE6;
 			packageReferences = (
-				C1AF1DDB2D5E045100A97FE6 /* XCRemoteSwiftPackageReference "Starscream" */,
 			);
 			productRefGroup = C1AF1DC52D5E040B00A97FE6 /* Products */;
 			projectDirPath = "";
@@ -157,6 +156,7 @@
 				C1AF1DE12D5E1B9B00A97FE6 /* WebSocketListenerVC.swift in Sources */,
 				C1AF1DE32D5E239100A97FE6 /* UIColorExt.swift in Sources */,
 				C1AF1DCA2D5E040B00A97FE6 /* SceneDelegate.swift in Sources */,
+				C1D598323038305D00E07F59 /* WebSocketManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,25 +381,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		C1AF1DDB2D5E045100A97FE6 /* XCRemoteSwiftPackageReference "Starscream" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/daltoniam/Starscream.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.8;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		C1AF1DDC2D5E045100A97FE6 /* Starscream */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C1AF1DDB2D5E045100A97FE6 /* XCRemoteSwiftPackageReference "Starscream" */;
-			productName = Starscream;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C1AF1DBC2D5E040B00A97FE6 /* Project object */;
 }
